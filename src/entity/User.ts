@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from "typeorm";
+import { Topic } from "./Topic";
 
 @Entity()
 export class User {
@@ -10,4 +11,7 @@ export class User {
 
   @Column()
   password: string; // hashed password
+
+  @ManyToMany(() => Topic, (topic) => topic.moderators)
+  topics: Topic[];
 }
