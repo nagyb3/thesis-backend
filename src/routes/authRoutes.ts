@@ -3,6 +3,7 @@ import { User } from "../entity/User";
 import { AppDataSource } from "../data-source";
 import * as bcrypt from "bcryptjs";
 import * as jwt from "jsonwebtoken";
+import { authenticateToken } from "../middlewares/authenticateToken";
 
 const express = require("express");
 
@@ -93,5 +94,26 @@ router.post("/login", async (req: Request, res: Response) => {
     return res.status(500).json({ message: "Something went wrong" });
   }
 });
+
+router.get(
+  "/profile",
+  authenticateToken,
+  async (req: Request, res: Response) => {
+    try {
+      const user = await AppDataSource.manager
+        .getRepository(User)
+        .createQueryBuilder("user")
+        .where("user.id = :id", { id: req.user.userId })
+        .getOneOrFail();
+
+      user.password = undefined;
+
+      res.status(200).json(user);
+    } catch (error) {
+      console.error(error);
+      res.status(404).send("User not found");
+    }
+  }
+);
 
 module.exports = router;
