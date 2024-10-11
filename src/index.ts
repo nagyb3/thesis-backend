@@ -6,7 +6,7 @@ import * as cookieParser from "cookie-parser";
 
 const authRoutes = require("./routes/authRoutes");
 const topicRoutes = require("./routes/topicRoutes");
-const discussionRoutes = require("./routes/DiscussionRoutes");
+const discussionRoutes = require("./routes/discussionRoutes");
 const commentRoutes = require("./routes/commentRoutes");
 
 dotenv.config();
