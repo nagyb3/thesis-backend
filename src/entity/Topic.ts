@@ -3,9 +3,11 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { User } from "./User";
+import { Discussion } from "./Discusson";
 
 @Entity()
 export class Topic {
@@ -26,4 +28,7 @@ export class Topic {
   @ManyToMany(() => User, (user) => user.topics)
   @JoinTable()
   moderators: User[];
+
+  @OneToMany(() => Discussion, (discussion) => discussion.topic)
+  discussions: Discussion[];
 }

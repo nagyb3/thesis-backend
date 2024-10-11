@@ -4,6 +4,8 @@ import { User } from "./entity/User";
 
 import * as dotenv from "dotenv";
 import { Topic } from "./entity/Topic";
+import { Discussion } from "./entity/Discusson";
+import { Comment } from "./entity/Comment";
 dotenv.config();
 
 export const AppDataSource = new DataSource({
@@ -15,7 +17,7 @@ export const AppDataSource = new DataSource({
   database: process.env.POSTGRES_DB,
   synchronize: true,
   logging: false,
-  entities: [User, Topic],
+  entities: [User, Topic, Discussion, Comment],
   migrations: [],
   subscribers: [],
 });

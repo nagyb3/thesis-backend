@@ -1,10 +1,19 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToMany,
+  OneToMany,
+  ManyToOne,
+} from "typeorm";
 import { Topic } from "./Topic";
+import { Discussion } from "./Discusson";
+import { Comment } from "./Comment";
 
 @Entity()
 export class User {
   @PrimaryGeneratedColumn("uuid")
-  id: number;
+  id: string;
 
   @Column()
   username: string;
@@ -14,4 +23,10 @@ export class User {
 
   @ManyToMany(() => Topic, (topic) => topic.moderators)
   topics: Topic[];
+
+  @OneToMany(() => Discussion, (discussion) => discussion.author)
+  discussions: Discussion[];
+
+  @ManyToOne(() => User, (user) => user.comments)
+  comments: Comment[];
 }

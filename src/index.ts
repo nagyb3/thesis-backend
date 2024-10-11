@@ -6,6 +6,8 @@ import * as cookieParser from "cookie-parser";
 
 const authRoutes = require("./routes/authRoutes");
 const topicRoutes = require("./routes/topicRoutes");
+const discussionRoutes = require("./routes/DiscussionRoutes");
+const commentRoutes = require("./routes/commentRoutes");
 
 dotenv.config();
 
@@ -23,6 +25,8 @@ app.use(
 
 app.use("/auth", authRoutes);
 app.use("/topics", topicRoutes);
+app.use("/discussions", discussionRoutes);
+app.use("/comments", commentRoutes);
 
 const PORT = process.env.PORT || 3000;
 
