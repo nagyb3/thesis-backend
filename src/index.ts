@@ -8,6 +8,8 @@ const authRoutes = require("./routes/authRoutes");
 const topicRoutes = require("./routes/topicRoutes");
 const discussionRoutes = require("./routes/discussionRoutes");
 const commentRoutes = require("./routes/commentRoutes");
+const usersRoutes = require("./routes/usersRoutes");
+const ratingRoutes = require("./routes/ratingRoutes");
 
 dotenv.config();
 
@@ -27,6 +29,8 @@ app.use("/auth", authRoutes);
 app.use("/topics", topicRoutes);
 app.use("/discussions", discussionRoutes);
 app.use("/comments", commentRoutes);
+app.use("/users", usersRoutes);
+app.use("/ratings", ratingRoutes);
 
 const PORT = process.env.PORT || 3000;
 

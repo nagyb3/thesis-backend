@@ -9,6 +9,7 @@ import {
 import { Topic } from "./Topic";
 import { Discussion } from "./Discusson";
 import { Comment } from "./Comment";
+import { Rating } from "./Rating";
 
 @Entity()
 export class User {
@@ -29,4 +30,10 @@ export class User {
 
   @ManyToOne(() => User, (user) => user.comments)
   comments: Comment[];
+
+  @OneToMany(() => Rating, (rating) => rating.givenby)
+  ratingsgiven: Rating[];
+
+  @OneToMany(() => Rating, (rating) => rating.givento)
+  ratingsreceived: Rating[];
 }
