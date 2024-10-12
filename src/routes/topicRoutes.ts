@@ -43,12 +43,20 @@ router.post("/", authenticateToken, async (req, res) => {
 });
 
 router.get("/", async (req, res) => {
-  const topics = await AppDataSource.getRepository(Topic)
-    .createQueryBuilder("topic")
-    .orderBy("topic.created_at", "DESC")
-    .getMany();
+  try {
+    const nameSearchParam = req.query.name;
 
-  res.send(topics);
+    const topics = await AppDataSource.getRepository(Topic)
+      .createQueryBuilder("topic")
+      .where("topic.name ILIKE :name", { name: `%${nameSearchParam}%` })
+      .orderBy("topic.created_at", "DESC")
+      .getMany();
+
+    res.send(topics);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Failed to get the topics.");
+  }
 });
 
 router.get("/:id", authenticateToken, async (req, res) => {
@@ -139,14 +147,18 @@ router.put("/:id", authenticateToken, async (req, res) => {
 router.get("/:id/discussions", async (req, res) => {
   const { id } = req.params;
 
-  try {
-    const topic = await AppDataSource.getRepository(Topic)
-      .createQueryBuilder("topic")
-      .leftJoinAndSelect("topic.discussions", "discussions")
-      .where("topic.id = :id", { id })
-      .getOneOrFail();
+  const searchParam = req.query.search;
 
-    res.status(200).json(topic.discussions);
+  try {
+    const discussions = await AppDataSource.getRepository(Discussion)
+      .createQueryBuilder("discussion")
+      .innerJoinAndSelect("discussion.topic", "topic")
+      .where("discussion.title ILIKE :search", { search: `%${searchParam}%` })
+      .andWhere("discussion.topic = :id", { id })
+      .getMany();
+
+    res.status(200).json(discussions);
+    return;
   } catch (error) {
     console.error(error);
     res.status(500).json("Failed to get the discussions.");
