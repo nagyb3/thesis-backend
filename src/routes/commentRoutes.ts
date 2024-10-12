@@ -4,6 +4,7 @@ import { User } from "../entity/User";
 import { AppDataSource } from "../data-source";
 import { Discussion } from "../entity/Discusson";
 import { authenticateToken } from "../middlewares/authenticateToken";
+import { Topic } from "../entity/Topic";
 
 const router = express.Router();
 
@@ -51,6 +52,40 @@ router.post("/", authenticateToken, async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).send("Failed to save the comment.");
+    return;
+  }
+});
+
+router.delete("/:id", authenticateToken, async (req, res) => {
+  const comment = await AppDataSource.getRepository(Comment)
+    .createQueryBuilder("comment")
+    .where("comment.id = :id", { id: req.params.id })
+    .leftJoinAndSelect("comment.author", "author")
+    .leftJoinAndSelect("comment.topic", "topic")
+    .getOne();
+
+  if (!comment) {
+    res.status(404).send("Comment not found.");
+    return;
+  }
+
+  if (
+    comment.author.id !== req.user.userId &&
+    comment.topic.moderators.every(
+      (moderator) => moderator.id !== req.user.userId
+    )
+  ) {
+    res.status(403).send("You are not allowed to delete this comment.");
+    return;
+  }
+
+  try {
+    await AppDataSource.getRepository(Comment).remove(comment);
+    res.status(200).send("Comment deleted.");
+    return;
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Failed to delete the comment.");
     return;
   }
 });

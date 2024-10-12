@@ -8,6 +8,7 @@ import {
 import { User } from "./User";
 import { Topic } from "./Topic";
 import { Comment } from "./Comment";
+import { DiscussionFeedback } from "./DiscussionFeedback";
 
 @Entity()
 export class Discussion {
@@ -31,4 +32,10 @@ export class Discussion {
 
   @OneToMany(() => Comment, (comment) => comment.discussion)
   comments: Comment[];
+
+  @OneToMany(
+    () => DiscussionFeedback,
+    (discussionFeedback) => discussionFeedback.discussion
+  )
+  discussionFeedback: DiscussionFeedback[];
 }

@@ -7,6 +7,7 @@ import {
 } from "typeorm";
 import { Discussion } from "./Discusson";
 import { User } from "./User";
+import { Topic } from "./Topic";
 
 @Entity()
 export class Comment {
@@ -24,4 +25,7 @@ export class Comment {
 
   @ManyToOne(() => Discussion, (discussion) => discussion.comments)
   discussion: Discussion;
+
+  @ManyToOne(() => Topic, (topic) => topic.comments)
+  topic: Topic;
 }
