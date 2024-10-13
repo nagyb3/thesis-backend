@@ -110,12 +110,7 @@ router.delete("/:id", authenticateToken, async (req, res) => {
 
 router.put("/:id", authenticateToken, async (req, res) => {
   const { id } = req.params;
-  const { name, description } = req.body;
-
-  if (!name || !description) {
-    res.status(400).json("Please provide the name for the new topic.");
-    return;
-  }
+  const { name, description, learningResources } = req.body;
 
   const topic = await AppDataSource.getRepository(Topic)
     .createQueryBuilder("topic")
@@ -132,8 +127,9 @@ router.put("/:id", authenticateToken, async (req, res) => {
     return;
   }
 
-  topic.name = name;
-  topic.description = description;
+  topic.name = name ?? topic.name;
+  topic.description = description ?? topic.description;
+  topic.learningResources = learningResources ?? topic.learningResources;
 
   try {
     await AppDataSource.getRepository(Topic).save(topic);

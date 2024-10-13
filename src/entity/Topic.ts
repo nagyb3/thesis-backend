@@ -35,4 +35,7 @@ export class Topic {
 
   @OneToMany(() => Comment, (comment) => comment.topic)
   comments: Comment[];
+
+  @Column("simple-array", { default: "" })
+  learningResources: string[] = [];
 }
