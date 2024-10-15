@@ -73,6 +73,7 @@ router.post("/login", async (req: Request, res: Response) => {
     if (!isMatch) {
       console.log("Passwords did not match");
       res.status(400).json({ message: "Invalid credentials" });
+      return;
     }
 
     const token = jwt.sign(

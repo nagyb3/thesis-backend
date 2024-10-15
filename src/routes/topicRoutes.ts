@@ -4,6 +4,11 @@ import { AppDataSource } from "../data-source";
 import { authenticateToken } from "../middlewares/authenticateToken";
 import { User } from "../entity/User";
 import { Discussion } from "../entity/Discusson";
+import * as sharp from "sharp";
+
+const AWS = require("aws-sdk");
+
+const s3 = new AWS.S3();
 
 const router = express.Router();
 
@@ -163,7 +168,7 @@ router.get("/:id/discussions", async (req, res) => {
 
 router.post("/:id/discussions", authenticateToken, async (req, res) => {
   const { id } = req.params;
-  const { title, content } = req.body;
+  const { title, content, image } = req.body;
 
   if (!title || !content) {
     res
@@ -176,6 +181,27 @@ router.post("/:id/discussions", authenticateToken, async (req, res) => {
   discussion.title = title;
   discussion.content = content;
   discussion.comments = [];
+
+  let imageUrl = undefined;
+  try {
+    if (image) {
+      const imageData = image.split(";base64,").pop();
+      const buffer = Buffer.from(imageData, "base64");
+      const webpBuffer = await sharp(buffer).toFormat("webp").toBuffer();
+      imageUrl = await s3
+        .upload({
+          Body: webpBuffer,
+          Bucket: process.env.AWS_BUCKET_NAME,
+          Key: `discussion-images/${new Date().toISOString()}.webp`,
+        })
+        .promise();
+      discussion.image = imageUrl.Location;
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json("Something went wrong.");
+    return;
+  }
 
   try {
     const topic = await AppDataSource.getRepository(Topic)

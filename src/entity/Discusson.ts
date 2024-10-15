@@ -38,4 +38,8 @@ export class Discussion {
     (discussionFeedback) => discussionFeedback.discussion
   )
   discussionFeedback: DiscussionFeedback[];
+
+  // url of the image for the discussion
+  @Column({ nullable: true })
+  image?: string;
 }
