@@ -11,6 +11,7 @@ import { Discussion } from "./Discusson";
 import { Comment } from "./Comment";
 import { Rating } from "./Rating";
 import { DiscussionFeedback } from "./DiscussionFeedback";
+import { PrivateMessage } from "./PrivateMessage";
 
 @Entity()
 export class User {
@@ -43,4 +44,10 @@ export class User {
     (discussionFeedback) => discussionFeedback.user
   )
   discussionFeedback: DiscussionFeedback[];
+
+  @OneToMany(() => PrivateMessage, (privateMessage) => privateMessage.sender)
+  privateMessagesSent: PrivateMessage[];
+
+  @OneToMany(() => PrivateMessage, (privateMessage) => privateMessage.receiver)
+  privateMessagesReceived: PrivateMessage[];
 }

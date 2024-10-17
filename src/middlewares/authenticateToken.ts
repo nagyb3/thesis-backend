@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
 const jwt = require("jsonwebtoken");
-interface UserPayload {
+export interface UserPayload {
   userId: string;
 }
 
