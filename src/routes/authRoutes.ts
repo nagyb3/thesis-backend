@@ -66,13 +66,17 @@ router.post("/login", async (req: Request, res: Response) => {
       .getRepository(User)
       .createQueryBuilder("user")
       .where("user.username = :username", { username })
-      .getOneOrFail();
+      .getOne();
+
+    if (!user) {
+      res.status(400).json({ message: "Invalid username or password" });
+      return;
+    }
 
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      console.log("Passwords did not match");
-      res.status(400).json({ message: "Invalid credentials" });
+      res.status(400).json({ message: "Invalid username or password" });
       return;
     }
 
