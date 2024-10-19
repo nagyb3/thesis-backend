@@ -7,6 +7,7 @@ import * as jwt from "jsonwebtoken";
 import { UserPayload } from "./middlewares/authenticateToken";
 import { verifyRoomIdForUserId } from "./utils/verifyRoomForUserId";
 import { getCookieValue } from "./utils/getCookieValue";
+import { isUserInRoom } from "./utils/isUserInRoom";
 
 const authRoutes = require("./routes/authRoutes");
 const topicRoutes = require("./routes/topicRoutes");
@@ -56,6 +57,48 @@ io.on("connection", (socket) => {
       socket.emit("join-private-message-room-accept", roomId);
     } else {
       socket.emit("join-private-message-room-reject", roomId);
+    }
+  });
+
+  socket.on("join-video-chat-room", (roomId) => {
+    const accessTokenCookie = getCookieValue(cookies, "access_token");
+
+    const decoded = jwt.verify(
+      accessTokenCookie,
+      process.env.JWT_SECRET as string
+    ) as UserPayload;
+
+    const userId = decoded?.userId;
+
+    const isRoomIdValid = verifyRoomIdForUserId(roomId, userId, "vc");
+
+    if (isRoomIdValid) {
+      socket.join(roomId);
+      socket.emit("join-video-chat-room-accept", roomId);
+      socket.to(roomId).emit("user-joined", userId);
+    } else {
+      socket.emit("join-video-chat-room-reject", roomId);
+    }
+    socket.on("disconnect", () => {
+      socket.to(roomId).emit("user-left", userId);
+    });
+  });
+
+  socket.on("offer", ({ offer, roomId }) => {
+    if (isUserInRoom(socket, roomId)) {
+      socket.to(roomId).emit("offer", offer);
+    }
+  });
+
+  socket.on("answer", ({ answer, roomId }) => {
+    if (isUserInRoom(socket, roomId)) {
+      socket.to(roomId).emit("answer", answer);
+    }
+  });
+
+  socket.on("ice-candidate", ({ candidate, roomId }) => {
+    if (isUserInRoom(socket, roomId)) {
+      socket.to(roomId).emit("ice-candidate", candidate);
     }
   });
 });
