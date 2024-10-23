@@ -64,4 +64,61 @@ router.get("/:id", authenticateToken, async (req, res) => {
     .send({ user: user, rating: average, numberOfRatings, ratingByReqUser });
 });
 
+router.get("/:id/tracked-times", authenticateToken, async (req, res) => {
+  try {
+    const user = await AppDataSource.getRepository(User)
+      .createQueryBuilder("user")
+      .leftJoinAndSelect("user.trackedTimes", "trackedTimes")
+      .where("user.id = :id", { id: req.params.id })
+      .getOne();
+
+    if (!user) {
+      res.status(404).send("User not found.");
+      return;
+    }
+
+    res.status(200).send(user.trackedTimes);
+    return;
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Failed to get tracked times.");
+    return;
+  }
+});
+
+router.put(
+  "/:id/tracked-minutes-daily-goal",
+  authenticateToken,
+  async (req, res) => {
+    if (!req.body.trackedMinutesDailyGoal) {
+      res.status(400).send("trackedMinutesDailyGoal is required.");
+      return;
+    }
+
+    if (req.user.userId !== req.params.id) {
+      res
+        .status(403)
+        .send(
+          "You are not allowed to update this user. You are only allowed to update your own profile's daily goal."
+        );
+      return;
+    }
+
+    try {
+      const updatedUser = await AppDataSource.getRepository(User)
+        .createQueryBuilder()
+        .update(User)
+        .set({ trackedMinutesDailyGoal: req.body.trackedMinutesDailyGoal })
+        .where("id = :id", { id: req.params.id })
+        .execute();
+
+      res.status(200).send(updatedUser);
+    } catch (error) {
+      console.log(error);
+      res.status(500).send("Failed to update the user's daily goal.");
+      return;
+    }
+  }
+);
+
 module.exports = router;

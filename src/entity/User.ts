@@ -12,6 +12,7 @@ import { Comment } from "./Comment";
 import { Rating } from "./Rating";
 import { DiscussionFeedback } from "./DiscussionFeedback";
 import { PrivateMessage } from "./PrivateMessage";
+import { TrackedTime } from "./TrackedTime";
 
 @Entity()
 export class User {
@@ -50,4 +51,10 @@ export class User {
 
   @OneToMany(() => PrivateMessage, (privateMessage) => privateMessage.receiver)
   privateMessagesReceived: PrivateMessage[];
+
+  @OneToMany(() => TrackedTime, (trackedTime) => trackedTime.user)
+  trackedTimes: TrackedTime[];
+
+  @Column({ default: 30 })
+  trackedMinutesDailyGoal: number;
 }

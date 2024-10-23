@@ -9,6 +9,7 @@ import { Comment } from "./entity/Comment";
 import { Rating } from "./entity/Rating";
 import { DiscussionFeedback } from "./entity/DiscussionFeedback";
 import { PrivateMessage } from "./entity/PrivateMessage";
+import { TrackedTime } from "./entity/TrackedTime";
 
 dotenv.config();
 
@@ -29,6 +30,7 @@ export const AppDataSource = new DataSource({
     Rating,
     DiscussionFeedback,
     PrivateMessage,
+    TrackedTime,
   ],
   migrations: [],
   subscribers: [],

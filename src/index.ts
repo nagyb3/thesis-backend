@@ -15,6 +15,7 @@ const commentRoutes = require("./routes/commentRoutes");
 const usersRoutes = require("./routes/usersRoutes");
 const ratingRoutes = require("./routes/ratingRoutes");
 const privateMessageRoutes = require("./routes/privateMessageRoutes");
+const trackedTimeRoutes = require("./routes/trackedTimeRoutes");
 
 dotenv.config();
 const PORT = process.env.PORT || 3000;
@@ -77,6 +78,7 @@ app.use("/comments", commentRoutes);
 app.use("/users", usersRoutes);
 app.use("/ratings", ratingRoutes);
 app.use("/private-messages", privateMessageRoutes);
+app.use("/tracked-times", trackedTimeRoutes);
 
 AppDataSource.initialize()
   .then(async () => {
