@@ -7,7 +7,9 @@ export class DiscussionFeedback {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @ManyToOne(() => Discussion, (discussion) => discussion.discussionFeedback)
+  @ManyToOne(() => Discussion, (discussion) => discussion.discussionFeedback, {
+    onDelete: "CASCADE",
+  })
   discussion: Discussion;
 
   // the user who gave the feedback
