@@ -4,7 +4,6 @@ import { User } from "../entity/User";
 import { AppDataSource } from "../data-source";
 import { Discussion } from "../entity/Discusson";
 import { authenticateToken } from "../middlewares/authenticateToken";
-import { Topic } from "../entity/Topic";
 
 const router = express.Router();
 

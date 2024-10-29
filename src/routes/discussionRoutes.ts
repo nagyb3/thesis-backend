@@ -8,7 +8,7 @@ import { DiscussionFeedback } from "../entity/DiscussionFeedback";
 
 const router = express.Router();
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", authenticateToken, async (req, res) => {
   try {
     const discussion = await AppDataSource.getRepository(Discussion)
       .createQueryBuilder("discussion")
@@ -43,7 +43,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", authenticateToken, async (req, res) => {
   try {
     const discussion = await AppDataSource.getRepository(Discussion)
       .createQueryBuilder("discussion")
@@ -68,7 +68,7 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", authenticateToken, async (req, res) => {
   try {
     const discussion = await AppDataSource.getRepository(Discussion)
       .createQueryBuilder("discussion")

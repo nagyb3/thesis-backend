@@ -27,7 +27,7 @@ router.post("/register", async (req: Request, res: Response) => {
       .getOne();
 
     if (user) {
-      return res.status(400).json({ message: "Username already used" });
+      return res.status(400).json({ message: "Username already taken." });
     }
   } catch (error) {
     return res.status(500).json({ message: "Something went wrong" });

@@ -47,7 +47,7 @@ router.post("/", authenticateToken, async (req, res) => {
   }
 });
 
-router.get("/", async (req, res) => {
+router.get("/", authenticateToken, async (req, res) => {
   try {
     const nameSearchParam = req.query.name;
 
@@ -145,7 +145,7 @@ router.put("/:id", authenticateToken, async (req, res) => {
   }
 });
 
-router.get("/:id/discussions", async (req, res) => {
+router.get("/:id/discussions", authenticateToken, async (req, res) => {
   const { id } = req.params;
 
   const searchParam = req.query.search;
