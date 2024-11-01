@@ -5,30 +5,27 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { Discussion } from "./Discusson";
-import { User } from "./User";
 import { Topic } from "./Topic";
+import { User } from "./User";
 
 @Entity()
-export class Comment {
+export class LearningPath {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
   @Column()
-  content: string;
+  title: string;
 
   @CreateDateColumn({ type: "timestamptz", default: () => "NOW()" })
   created_at: Date;
 
-  @ManyToOne(() => User, (user) => user.comments)
+  @ManyToOne(() => User, (user) => user.learningPaths)
   author: User;
 
-  @ManyToOne(() => Discussion, (discussion) => discussion.comments, {
-    onDelete: "CASCADE",
-  })
-  discussion: Discussion;
+  @Column({ type: "jsonb" })
+  items: { title: string; id: string }[];
 
-  @ManyToOne(() => Topic, (topic) => topic.comments, {
+  @ManyToOne(() => Topic, (topic) => topic.learningPaths, {
     onDelete: "CASCADE",
   })
   topic: Topic;

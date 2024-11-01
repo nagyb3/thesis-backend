@@ -5,6 +5,7 @@ import { authenticateToken } from "../middlewares/authenticateToken";
 import { User } from "../entity/User";
 import { Discussion } from "../entity/Discusson";
 import * as sharp from "sharp";
+import { LearningPath } from "../entity/LearningPath";
 
 const AWS = require("aws-sdk");
 
@@ -70,8 +71,21 @@ router.get("/:id", authenticateToken, async (req, res) => {
   const topic = await AppDataSource.getRepository(Topic)
     .createQueryBuilder("topic")
     .leftJoinAndSelect("topic.moderators", "moderators")
+    .leftJoinAndSelect("topic.learningPaths", "learningPaths")
+    .leftJoinAndSelect("learningPaths.author", "learningPathsAuthor")
     .leftJoinAndSelect("topic.discussions", "discussions")
-    .select(["topic", "discussions", "moderators.username", "moderators.id"])
+    .leftJoinAndSelect("discussions.author", "discussionsAuthor")
+    .select([
+      "topic",
+      "discussions",
+      "moderators.username",
+      "moderators.id",
+      "learningPaths",
+      "learningPathsAuthor.username",
+      "learningPathsAuthor.id",
+      "discussionsAuthor.username",
+      "discussionsAuthor.id",
+    ])
     .where("topic.id = :id", { id })
     .getOne();
 
@@ -233,6 +247,51 @@ router.post("/:id/discussions", authenticateToken, async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json("Something went wrong while saving new discussion.");
+  }
+});
+
+router.post("/:id/learning-paths", authenticateToken, async (req, res) => {
+  if (!req.body.title || !req.body.items) {
+    res.status(400).send("Please provide all required fields.");
+    return;
+  }
+
+  try {
+    const topic = await AppDataSource.getRepository(Topic)
+      .createQueryBuilder("topic")
+      .where("topic.id = :id", { id: req.params.id })
+      .getOneOrFail();
+
+    let learningPath = new LearningPath();
+    learningPath.title = req.body.title;
+    learningPath.items = req.body.items;
+    learningPath.topic = topic;
+    learningPath.author = await AppDataSource.getRepository(User)
+      .createQueryBuilder("user")
+      .where("user.id = :id", { id: req.user.userId })
+      .getOneOrFail();
+
+    learningPath = await AppDataSource.getRepository(LearningPath).save(
+      learningPath
+    );
+
+    res.status(201).json(learningPath);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Failed to save the learning path.");
+  }
+});
+
+router.get("/:id/learning-paths", authenticateToken, async (req, res) => {
+  try {
+    const learningPaths = await AppDataSource.getRepository(LearningPath)
+      .createQueryBuilder("learningPath")
+      .where("learningPath.topic = :id", { id: req.params.id })
+      .getMany();
+    res.status(200).json(learningPaths);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Failed to get the learning paths.");
   }
 });
 

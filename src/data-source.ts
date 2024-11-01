@@ -1,7 +1,6 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
 import { User } from "./entity/User";
-
 import * as dotenv from "dotenv";
 import { Topic } from "./entity/Topic";
 import { Discussion } from "./entity/Discusson";
@@ -10,6 +9,7 @@ import { Rating } from "./entity/Rating";
 import { DiscussionFeedback } from "./entity/DiscussionFeedback";
 import { PrivateMessage } from "./entity/PrivateMessage";
 import { TrackedTime } from "./entity/TrackedTime";
+import { LearningPath } from "./entity/LearningPath";
 
 dotenv.config();
 
@@ -31,6 +31,7 @@ export const AppDataSource = new DataSource({
     DiscussionFeedback,
     PrivateMessage,
     TrackedTime,
+    LearningPath,
   ],
   migrations: [],
   subscribers: [],

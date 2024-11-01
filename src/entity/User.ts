@@ -13,6 +13,7 @@ import { Rating } from "./Rating";
 import { DiscussionFeedback } from "./DiscussionFeedback";
 import { PrivateMessage } from "./PrivateMessage";
 import { TrackedTime } from "./TrackedTime";
+import { LearningPath } from "./LearningPath";
 
 @Entity()
 export class User {
@@ -57,4 +58,7 @@ export class User {
 
   @Column({ default: 30 })
   trackedMinutesDailyGoal: number;
+
+  @OneToMany(() => LearningPath, (learningPath) => learningPath.author)
+  learningPaths: LearningPath[];
 }

@@ -9,6 +9,7 @@ import {
 import { User } from "./User";
 import { Discussion } from "./Discusson";
 import { Comment } from "./Comment";
+import { LearningPath } from "./LearningPath";
 
 @Entity()
 export class Topic {
@@ -38,4 +39,7 @@ export class Topic {
 
   @Column("simple-array", { default: "" })
   learningResources: string[] = [];
+
+  @OneToMany(() => LearningPath, (learningPath) => learningPath.topic)
+  learningPaths: LearningPath[];
 }
