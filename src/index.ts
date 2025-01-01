@@ -26,7 +26,7 @@ const server = app.listen(Number(PORT), "0.0.0.0", () => {
 
 export const io = initializeSocket(server);
 
-app.use(express.json({ limit: "50mb" }));
+app.use(express.json({ limit: "100mb" }));
 app.use(cookieParser());
 app.use(
   cors({

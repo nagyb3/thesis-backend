@@ -42,4 +42,8 @@ export class Discussion {
   // url of the image for the discussion
   @Column({ nullable: true })
   image?: string;
+
+  // url of the video for the discussion
+  @Column({ nullable: true })
+  video?: string;
 }

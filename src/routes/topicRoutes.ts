@@ -182,7 +182,7 @@ router.get("/:id/discussions", authenticateToken, async (req, res) => {
 
 router.post("/:id/discussions", authenticateToken, async (req, res) => {
   const { id } = req.params;
-  const { title, content, image } = req.body;
+  const { title, content, image, video } = req.body;
 
   if (!title || !content) {
     res
@@ -210,6 +210,26 @@ router.post("/:id/discussions", authenticateToken, async (req, res) => {
         })
         .promise();
       discussion.image = imageUrl.Location;
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json("Something went wrong.");
+    return;
+  }
+
+  let videoUrl = undefined;
+  try {
+    if (video) {
+      const videoData = video.split(";base64,").pop();
+      const buffer = Buffer.from(videoData, "base64");
+      videoUrl = await s3
+        .upload({
+          Body: buffer,
+          Bucket: process.env.AWS_BUCKET_NAME,
+          Key: `discussion-videos/${new Date().toISOString()}.webm`,
+        })
+        .promise();
+      discussion.video = videoUrl.Location;
     }
   } catch (error) {
     console.error(error);
