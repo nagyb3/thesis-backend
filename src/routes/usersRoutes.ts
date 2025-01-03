@@ -11,6 +11,8 @@ router.get("/:id", authenticateToken, async (req, res) => {
   try {
     user = await AppDataSource.getRepository(User)
       .createQueryBuilder("user")
+      .leftJoinAndSelect("user.trackedTimes", "trackedTimes")
+      .leftJoinAndSelect("user.discussions", "discussions")
       .where("user.id = :id", { id: req.params.id })
       .getOne();
   } catch (error) {
