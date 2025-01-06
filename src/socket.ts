@@ -40,6 +40,7 @@ export const initializeSocket = (server) => {
     });
 
     socket.on("join-video-chat-room", (roomId) => {
+      console.log("join-video-chat-room", { roomId });
       const accessTokenCookie = getCookieValue(cookies, "access_token");
 
       const decoded = jwt.verify(
@@ -59,25 +60,32 @@ export const initializeSocket = (server) => {
         socket.emit("join-video-chat-room-reject", roomId);
       }
       socket.on("disconnect", () => {
+        console.log("disconnet", { roomId, socket, userId });
         socket.to(roomId).emit("user-left", userId);
       });
     });
 
     socket.on("offer", ({ offer, roomId }) => {
+      console.log("offer", { offer, roomId });
       if (isUserInRoom(socket, roomId)) {
         socket.to(roomId).emit("offer", offer);
+        console.log("offer sent", { offer });
       }
     });
 
     socket.on("answer", ({ answer, roomId }) => {
+      console.log("answer", { answer, roomId });
       if (isUserInRoom(socket, roomId)) {
         socket.to(roomId).emit("answer", answer);
+        console.log("answer sent", { answer });
       }
     });
 
     socket.on("ice-candidate", ({ candidate, roomId }) => {
+      console.log("ice-candidate", { candidate, roomId });
       if (isUserInRoom(socket, roomId)) {
         socket.to(roomId).emit("ice-candidate", candidate);
+        console.log("ice-candidate sent", { candidate });
       }
     });
   });
