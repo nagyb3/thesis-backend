@@ -10,8 +10,8 @@ export class Rating {
   score: number;
 
   @ManyToOne(() => User, (user) => user.ratingsgiven)
-  givenby: User;
+  givenBy: User;
 
   @ManyToOne(() => User, (user) => user.ratingsreceived)
-  givento: User;
+  givenTo: User;
 }

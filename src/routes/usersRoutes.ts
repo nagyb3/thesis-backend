@@ -34,8 +34,8 @@ router.get("/:id", authenticateToken, async (req, res) => {
   try {
     const ratingsForUser = await AppDataSource.getRepository(Rating)
       .createQueryBuilder("rating")
-      .innerJoinAndSelect("rating.givento", "givento")
-      .where("rating.givento = :id", { id: req.params.id })
+      .innerJoinAndSelect("rating.givenTo", "givenTo")
+      .where("rating.givenTo = :id", { id: req.params.id })
       .getMany();
 
     average =
@@ -50,8 +50,8 @@ router.get("/:id", authenticateToken, async (req, res) => {
   try {
     const rating = await AppDataSource.getRepository(Rating)
       .createQueryBuilder("rating")
-      .where("rating.givenby = :fromUserId", { fromUserId: req.user.userId })
-      .andWhere("rating.givento = :toUserId", { toUserId: req.params.id })
+      .where("rating.givenBy = :fromUserId", { fromUserId: req.user.userId })
+      .andWhere("rating.givenTo = :toUserId", { toUserId: req.params.id })
       .getOne();
 
     if (rating) {

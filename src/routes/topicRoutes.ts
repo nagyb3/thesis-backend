@@ -17,7 +17,7 @@ router.post("/", authenticateToken, async (req, res) => {
   const { name, description } = req.body;
 
   if (!name) {
-    res.status(400).send("Please provide the name for the new topic.");
+    res.status(400).send("Missing topic name.");
     return;
   }
 
@@ -31,7 +31,7 @@ router.post("/", authenticateToken, async (req, res) => {
     topic.moderators = [user];
   } catch (error) {
     console.error(error);
-    res.status(500).send("user not found.");
+    res.status(500).send("User not found.");
     return;
   }
 

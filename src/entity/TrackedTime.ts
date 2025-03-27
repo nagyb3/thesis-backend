@@ -18,12 +18,9 @@ export class TrackedTime {
   @Column()
   minutes: number;
 
-  // Date for when the time was tracked to
-  // note: the date is not the same as the created_at column
-  // users can track time to a date in the past
   @Column("date")
   date: Date;
 
   @CreateDateColumn({ type: "timestamptz", default: () => "NOW()" })
-  created_at: Date;
+  createdAt: Date;
 }

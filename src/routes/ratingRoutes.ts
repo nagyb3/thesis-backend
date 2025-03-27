@@ -18,8 +18,8 @@ router.post("/", authenticateToken, async (req, res) => {
   try {
     const existingRating = await AppDataSource.getRepository(Rating)
       .createQueryBuilder("rating")
-      .where("rating.givenby = :fromUserId", { fromUserId })
-      .andWhere("rating.givento = :toUserId", { toUserId: req.body.toUser })
+      .where("rating.givenBy = :fromUserId", { fromUserId })
+      .andWhere("rating.givenTo = :toUserId", { toUserId: req.body.toUser })
       .getOne();
 
     if (existingRating) {
@@ -51,8 +51,8 @@ router.post("/", authenticateToken, async (req, res) => {
     const rating = new Rating();
 
     rating.score = req.body.score;
-    rating.givenby = fromUser;
-    rating.givento = toUser;
+    rating.givenBy = fromUser;
+    rating.givenTo = toUser;
 
     await AppDataSource.getRepository(Rating).save(rating);
     res.status(201).send(rating);

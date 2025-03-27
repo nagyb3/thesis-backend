@@ -35,10 +35,10 @@ export class User {
   @ManyToOne(() => User, (user) => user.comments)
   comments: Comment[];
 
-  @OneToMany(() => Rating, (rating) => rating.givenby)
+  @OneToMany(() => Rating, (rating) => rating.givenBy)
   ratingsgiven: Rating[];
 
-  @OneToMany(() => Rating, (rating) => rating.givento)
+  @OneToMany(() => Rating, (rating) => rating.givenTo)
   ratingsreceived: Rating[];
 
   @OneToMany(
